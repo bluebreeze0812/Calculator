@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="charset" content="utf-8">
+	<title>Calculator</title>
+	
+	<style>
+		.calculator {
+			width: 400px;
+			margin: auto;
+			text-align: center;
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+		}
+		
+		.screen {
+			text-align: right;
+			margin: auto;
+			width: 400px;
+			background-color: black;
+		}
+		
+		.view {
+			font-family:Arial,Verdana,Sans-serif;
+			font-size: 600%;
+			color: white;
+		}
+		
+		table {
+			width: 400px;
+			border: 1px solid silver;
+			border-collapse: collapse;
+		}
+		
+		td {
+			height: 100px;
+			width: 100px;
+			font-family: "Comic Sans MS", cursive, sans-serif;
+			font-size: 150%;
+			background-color: DarkCyan;
+			transition: box-shadow 0.5s;
+		}
+		
+		td:hover {
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2) inset, 0 6px 20px 0 rgba(0, 0, 0, 0.19) inset;
+		}
+		
+		#equal {
+			background-color: #00B8FF;
+			transition: background-color 0.5s, box-shadow 0.5s;
+		}
+		
+		#equal:hover {
+			background-color: #FFFFFF;
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2) inset, 0 6px 20px 0 rgba(0, 0, 0, 0.19) inset;
+		}
+	</style>
+	
+	<script>
+		//Define a expression and anothon expression whitch will show on screen
+		var expression = "";
+		var expression_display = "";
+		
+		function input(value) {
+			//When a input come, judge the type of input
+			if(value == "b") {
+				//If user want to backspace, then slice the expression with the last char
+				if(expression.length != 0) {
+					expression = expression.slice(0, -1);
+				} else {
+					expression = "";
+				}
+			} else if(value == "c") {
+				//If user want to clear the screen, then empty the expression
+				expression = "";
+			} else {
+				//If user input a char or an operator, add it into expression
+				expression += value;
+			}
+			if(expression.length <= 9) {
+				//If the length of expression is less than 9, it prove that our display expression can show in screen totally.
+				expression_display = expression;
+			} else {
+				//If it greater than 9, slice it to adjust the screen
+				expression_display = expression.slice(-9);
+			}
+			//finally, show it to screen, but it can be null. We should add a judgment sentence into show() function.
+			show(expression_display);
+		}
+		
+		function show(num) {
+			if(num.length != 0) {
+				//This line is here because calculate() function will pass in a result string, and it could be greater than 9.
+				//If it does, then show "Overflow" to the user, and empty both the expression and expression_display.
+				if(num.length <= 9) {
+					document.getElementById("view").innerHTML = num;
+				} else {
+					document.getElementById("view").innerHTML = "Overflow";
+					expression = "";
+					expression_display = "";
+				}
+			} else {
+				//If parameter is null, then do nothing.
+				document.getElementById("view").innerHTML = "0";
+			}
+		}
+		
+		function calculate() {
+			if(expression.length != 0) {
+				expression = expression.replace(/¡Á/g, "*");
+				expression = expression.replace(/¡Â/g, "/");
+				expression = eval(expression).toString();
+				show(expression); 
+			}
+		}
+	</script>
+</head>
+
+<body>
+	<div id="calculator" class="calculator">
+		<div id="screen" class="screen">
+			<span id="view" class="view">0</span>
+		</div>
+		<table align="center" border=1>
+			<tr>
+				<td onclick="input('c')">C</td>
+				<td onclick="input('¡Â')">&divide;</td>
+				<td onclick="input('¡Á')">&times;</td>
+				<td onclick="input('b')">&otimes;</td>
+			</tr>
+			
+			<tr>
+				<td onclick="input(7)">7</td>
+				<td onclick="input(8)">8</td>
+				<td onclick="input(9)">9</td>
+				<td onclick="input('-')">-</td>
+			</tr>
+			
+			<tr>
+				<td onclick="input(4)">4</td>
+				<td onclick="input(5)">5</td>
+				<td onclick="input(6)">6</td>
+				<td onclick="input('+')">+</td>
+			</tr>
+			
+			<tr>
+				<td onclick="input(1)">1</td>
+				<td onclick="input(2)">2</td>
+				<td onclick="input(3)">3</td>
+				<td onclick="calculate()" rowspan=2 id="equal">=</td>
+			</tr>
+			
+			<tr>
+				<td onclick="input(0)" colspan=2>0</td>
+				<td onclick="input('.')">.</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
